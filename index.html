@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <style>
+            .preload {
+                display:none;
+            }
+                
+        </style>
+        <script type="text/javascript" src="hit.js"></script>
+        <script type="text/javascript" src="stage.js"></script>
+        <script>
+            //Lazy way of making sure code doesn't run before page is loaded
+            window.addEventListener("load", function() {
+                var canvas = document.getElementById("main");
+                var ctx = canvas.getContext("2d");
+                var bf = document.getElementById("BF");
+                var percentInput = document.getElementById("victimpercent");
+                var damageInput = document.getElementById("hitboxdamage");
+                var growthInput = document.getElementById("knockbackgrowth");
+                var baseInput = document.getElementById("baseknockback");
+                var angleInput = document.getElementById("angle");
+                var NTSCInput = document.getElementById("NTSC");
+                var characterInput = document.getElementById("character");
+                var displayButton = document.getElementById("display");
+                
+                displayButton.addEventListener("click", function() {
+                    var percent = parseFloat(percentInput.value);
+                    var damage = parseFloat(damageInput.value);
+                    var growth = parseFloat(growthInput.value);
+                    var base = parseFloat(baseInput.value);
+                    var angle = parseFloat(angleInput.value);
+                    var NTSC = NTSCInput.checked;
+                    var character = characterInput.options[characterInput.selectedIndex].text;
+                    
+                    //The numbers are top/bottom/left/right pixels for the 
+                    //stage boundaries since the image doesn't align perfectly
+                    //with them. This will be in a pretty JSON block or something
+                    //later. It isn't part of the "Stage" object because I'm
+                    //keeping drawing separate for now
+                    var stage = new Stage("Battlefield", 61, 851, 13, 1267);
+                    ctx.drawImage(bf, 0, 0);
+                    
+                    var hit = new Hit(percent, damage, growth, base, angle, character, NTSC);
+                    var positions = hit.positions;
+                    console.log(positions);
+                    
+                    ctx.beginPath();
+                    ctx.strokeStyle = "red";
+                    ctx.moveTo(stage.horToPixel(0), stage.verToPixel(0));
+                    
+                    //Draws a line between positions during hitstun
+                    for (var i=0; i<positions.length; i++) {
+                        var hPos = stage.horToPixel(positions[i][0]);
+                        var vPos = stage.verToPixel(positions[i][1]);
+                        ctx.lineTo(hPos, vPos);
+                    }
+                    ctx.stroke();
+                }, false);
+                
+            }, false);
+        </script>
+	</head>
+    
+    <body>
+        Victim percent: <input id="victimpercent">
+        Hitbox damage: <input id="hitboxdamage">
+        Knockback growth: <input id="knockbackgrowth">
+        Base knockback: <input id="baseknockback">
+        Angle: <input id="angle">
+        NTSC: <input id="NTSC" type="checkbox" checked>
+        Character:
+        <select id="character">
+            <option>Fox</option>
+            <option>Falco</option>
+            <option>Sheik</option>
+            <option>Marth</option>
+            <option>Jigglypuff</option>
+            <option>Peach</option>
+            <option>Captain Falcon</option>
+            <option>Ice Climbers</option>
+            <option>Dr. Mario</option>
+            <option>Pikachu</option>
+            <option>Samus</option>
+            <option>Ganondorf</option>
+            <option>Luigi</option>
+            <option>Mario</option>
+            <option>Young Link</option>
+            <option>Link</option>
+            <option>Donkey Kong</option>
+            <option>Yoshi</option>
+            <option>Zelda</option>
+            <option>Roy</option>
+            <option>Mewtwo</option>
+            <option>Mr. Game &amp; Watch</option>
+            <option>Ness</option>
+            <option>Bowser</option>
+            <option>Pichu</option>
+            <option>Kirby</option>
+            <option>Giga Bowser</option>
+        </select>
+        <button id="display">Display</button><br>
+        <canvas id="main" width="1280" height="960"></canvas>
+        <img id="BF" class="preload" src="BattlefieldFinal.png">
+    </body>
+</html>
