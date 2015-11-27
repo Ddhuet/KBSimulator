@@ -61,7 +61,7 @@ function Hit(percent, damage, growth, base, trajectory, character, NTSC) {
                 verticalVelocity = verticalVelocity - characters[character]["gravity"];
             }
             else if (i === gravityFrames) {
-                verticalVelocity = verticalVelocity - lastGravityFrame;
+                verticalVelocity = verticalVelocity - (lastGravityFrame * characters[character]["gravity"]);
             }
             
             hPos = hPos + horizontalVelocity;
